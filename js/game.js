@@ -25,7 +25,7 @@ window.onload = function () {
 
 	var server = [];
 	var applePoint = 10;
-
+	var obstacle = [];
 	var INITIAL_X_CORD = 0;
 	var INITIAL_Y_CORD = 0;
 	var MOVE_PX = 20;
@@ -98,7 +98,7 @@ window.onload = function () {
 		context.clearRect(INITIAL_X_CORD, INITIAL_Y_CORD, BOARD_WIDTH, BOARD_HEIGHT + SCORE_BOARD_HEIGHT);
 		buildSnake();
 		buildServer();
-
+		buildObstacle();
 		drawBoard();
 		//		loopSnake();
 	}
@@ -114,17 +114,21 @@ window.onload = function () {
 
 	function buildServer() {
 		var randomPoint = getRandomPoint();
-		while (isPointOnSnake(randomPoint)) {
+		while (isPointOnSnake(randomPoint) || isPointOnObstacle(randomPoint)) {
 			randomPoint = getRandomPoint();
 		}
 		server.x = randomPoint.x;
 		server.y = randomPoint.y;
 	}
-
+	function buildObstacle() {
+		obstacle.x = 200;
+		obstacle.y = BOARD_WIDTH / 2;
+		obstacle.length = 5;
+	}
+	
 	function getRandomPoint() {
 		var x = Math.floor((Math.random() * (BOARD_WIDTH / MOVE_PX))) * MOVE_PX;
 		var y = Math.floor((Math.random() * ((BOARD_HEIGHT - SCORE_BOARD_HEIGHT )/ MOVE_PX))) * MOVE_PX + SCORE_BOARD_HEIGHT;
-		console.log(x, y)
 		return { x, y };
 	}
 
@@ -136,7 +140,14 @@ window.onload = function () {
 		}
 		return false;
 	}
-
+	function isPointOnObstacle(randomPoint) {
+		for (var i = 1; i <= obstacle.length; i++){
+			if((obstacle.x + (i*20)) === randomPoint.x && obstacle.y === randomPoint.y){
+				return true;
+			}
+		}
+		return false;
+	}
 	function drawBoard() {
 		if (!isGameOver) {
 			context.fillStyle = BOARD_BGCOLOR;
@@ -167,6 +178,7 @@ window.onload = function () {
 
 			//drawServer
 			context.drawImage(server.image, server.x, server.y);
+			context.fillRect(obstacle.x, obstacle.y, obstacle.length*20, 20);
 		}
 
 	}
@@ -184,7 +196,6 @@ window.onload = function () {
 		} if (snakeDirection === "down") {
 			snakeArray.unshift({ x: x_temp, y: y_temp + MOVE_PX, style: "headdown" })
 		}
-		console.log(snakeArray.length);
 		var tmpItem = snakeArray.pop();
 		for (i = 1; i < snakeArray.length - 1; i++) {
 			if (snakeArray[i].y === snakeArray[i - 1].y && snakeArray[i].y === snakeArray[i + 1].y)
