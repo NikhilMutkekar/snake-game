@@ -227,7 +227,9 @@ startgame = function () {
 			}
 
 			context.drawImage(server.image, server.x, server.y);
-			context.fillRect(obstacle.x, obstacle.y, obstacle.length*20, 20);
+			if(obstracleIntroLevel){
+					context.fillRect(obstacle.x, obstacle.y, obstacle.length*20, 20);
+			}
 		}
 
 	}
